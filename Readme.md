@@ -1,5 +1,5 @@
 Создайте в DB postgresql схему: create schema bookshop;
-В application.properties измените url,username,password на свои
+В application.properties измените настройки подключения (url,username,password) на свои
 Запуск приложения командой: mvn clean spring-boot:run
 
 1)Добавление новой книги в таблицу book: POST: http://localhost:8081/book
@@ -13,6 +13,7 @@
 
 4)Обновление записи о книге: PUT: http://localhost:8081/book
     {
+        "id":1,
         "title": "php",
         "author": "alex",
         "description": "book about php 2022 year"

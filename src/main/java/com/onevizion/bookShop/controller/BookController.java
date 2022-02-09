@@ -9,8 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toCollection;
 
 @Controller
 @RequestMapping(value = "/book", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -25,9 +32,10 @@ public class BookController {
     @GetMapping
     public ResponseEntity<List<BookDTO>> getAll(BookFilterDTO bookFilterDTO) {
 
-        List<BookDTO> bookDTOs = bookService.getAll(bookFilterDTO);
+        List<BookDTO> bookDTOs = bookService.getAll(bookFilterDTO).stream().filter(p->!p.getDescription().isEmpty()).distinct().collect(Collectors.toList())
+                .stream().collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparing(BookDTO::getDescription))), ArrayList::new));
 
-        return new ResponseEntity<>(bookDTOs, HttpStatus.OK);
+        return ResponseEntity.ok(bookDTOs);
     }
 
     @PostMapping
